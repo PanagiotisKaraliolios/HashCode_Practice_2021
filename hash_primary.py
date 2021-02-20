@@ -1,4 +1,5 @@
 from operator import itemgetter
+from tqdm import tqdm
 
 # Donate
 # ETH:0x5bFe733B4Cf20E38A0A3277Dbe5b69a40299C6C2
@@ -7,7 +8,7 @@ from operator import itemgetter
 # Please start with smaller files first because the more te pizzas the slower it will process
 # Just change 'input 5' to whatever name of the other input files
 
-file = open('input5', 'r', encoding='utf-8')  # Open input file
+file = open('input150', 'r', encoding='utf-8')  # Open input file
 linear_problem = [line.replace("\n", "").replace("\t", "").split(' ') for line in file]  # Parse input file
 
 # Remove potential empty strings
@@ -49,53 +50,23 @@ for i in range(1, pizzas + 1):
         p.ingredients.append(linear_problem[i][j])
     pizzaList.append(p)
 
-# Combinations for the groups of 2
 combinations = []
-combinationsOf2 = []
-for i in range(len(pizzaList)):
-    for j in range(i + 1, len(pizzaList)):
-        ings = list()
-        for a in pizzaList[i].ingredients:
-            if a not in ings:
-                ings.append(a)
-        for a in pizzaList[j].ingredients:
-            if a not in ings:
-                ings.append(a)
-
-        combinationsOf2.append([len(ings) ** 2, i, j])
-
-combinationsOf2.sort(key=itemgetter(0))
-combinations += combinationsOf2
-del combinationsOf2  # Free up some RAM
-
-# Combinations for the groups of 3
-combinationsOf3 = []
-for i in range(len(pizzaList)):
-    for j in range(i + 1, len(pizzaList)):
-        for k in range(j + 1, len(pizzaList)):
-            ings = list()
-            for a in pizzaList[i].ingredients:
-                if a not in ings:
-                    ings.append(a)
-            for a in pizzaList[j].ingredients:
-                if a not in ings:
-                    ings.append(a)
-            for a in pizzaList[k].ingredients:
-                if a not in ings:
-                    ings.append(a)
-
-            combinationsOf3.append([len(ings) ** 2, i, j, k])
-
-combinationsOf3.sort(key=itemgetter(0))
-combinations += combinationsOf3
-del combinationsOf3  # Free up some RAM
 
 # Combinations for the groups of 4
 combinationsOf4 = []
-for i in range(len(pizzaList)):
+#for i in range(len(pizzaList)):
+for i in tqdm(range(len(pizzaList))):
+    if pizzaList[i].given:
+        continue    
     for j in range(i + 1, len(pizzaList)):
+        if pizzaList[j].given:
+            continue 
         for k in range(j + 1, len(pizzaList)):
+            if pizzaList[k].given:
+                continue
             for l in range(k + 1, len(pizzaList)):
+                if pizzaList[l].given:
+                    continue
                 ings = list()
                 for a in pizzaList[i].ingredients:
                     if a not in ings:
@@ -115,7 +86,61 @@ combinationsOf4.sort(key=itemgetter(0))
 combinations += combinationsOf4
 del combinationsOf4  # Free up some RAM
 
+
+# Combinations for the groups of 3
+combinationsOf3 = []
+for i in tqdm(range(len(pizzaList))):
+    if pizzaList[i].given:
+        continue
+    for j in range(i + 1, len(pizzaList)):
+        if pizzaList[j].given:
+            continue
+        for k in range(j + 1, len(pizzaList)):
+            if pizzaList[k].given:
+                continue 
+            ings = list()
+            for a in pizzaList[i].ingredients:
+                if a not in ings:
+                    ings.append(a)
+            for a in pizzaList[j].ingredients:
+                if a not in ings:
+                    ings.append(a)
+            for a in pizzaList[k].ingredients:
+                if a not in ings:
+                    ings.append(a)
+
+            combinationsOf3.append([len(ings) ** 2, i, j, k])
+
+combinationsOf3.sort(key=itemgetter(0))
+combinations += combinationsOf3
+del combinationsOf3  # Free up some RAM
+
+# Combinations for the groups of 2
+combinationsOf2 = []
+for i in tqdm(range(len(pizzaList))):
+    if pizzaList[i].given:
+        continue
+    for j in range(i + 1, len(pizzaList)):
+        if pizzaList[j].given:
+            continue
+        ings = list()
+        for a in pizzaList[i].ingredients:
+            if a not in ings:
+                ings.append(a)
+        for a in pizzaList[j].ingredients:
+            if a not in ings:
+                ings.append(a)
+
+        combinationsOf2.append([len(ings) ** 2, i, j])
+
+combinationsOf2.sort(key=itemgetter(0))
+combinations += combinationsOf2
+del combinationsOf2  # Free up some RAM
+
+
+
 combinations.reverse()
+print(combinations)
 
 # Select from highest to lowest score to give every pizza
 # For every potential remaining pizzas there is a combination that covers them
