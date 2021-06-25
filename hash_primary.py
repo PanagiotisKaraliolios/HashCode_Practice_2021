@@ -1,9 +1,5 @@
 from operator import itemgetter
 
-# Donate
-# ETH:0x5bFe733B4Cf20E38A0A3277Dbe5b69a40299C6C2
-# BTC:1CUrEo4N5Kt1WfHZCAYwYetVkHF4Ryuyxe
-
 # Please start with smaller files first because the more te pizzas the slower it will process
 # Just change 'input 5' to whatever name of the other input files
 
